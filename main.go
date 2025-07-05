@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// creates a new server instance
-	// s := newServer()
+	s := newServer()
 
 	// listens the tcp port
 	listener, err := net.Listen("tcp", ":8888")
@@ -17,4 +17,15 @@ func main() {
 
 	// dont forget to close the listener
 	defer listener.Close()
+	log.Printf("server listened to port: 8888")
+
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Printf("unable to accept connection: %s", err.Error())
+			continue
+		}
+
+		go s.newClient(conn)
+	}
 }
