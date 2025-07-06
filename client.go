@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"net"
 	"strings"
 )
@@ -24,7 +25,26 @@ func (c *client) readInput() {
 		// processes the message
 		msg = strings.Trim(msg, "\r\n")
 
-		// args := strings.Split(msg, " ")
-		// cmd := strings.TrimSpace(args[0])
+		args := strings.Split(msg, " ")
+
+		cmd := strings.TrimSpace(args[0])
+
+		switch cmd {
+		case "/nick":
+		case "/rooms":
+		case "/join":
+		case "/msg":
+		case "/quit":
+		default:
+			c.err(fmt.Errorf("unknow command %s", cmd))
+		}
 	}
+}
+
+func (c *client) err(err error) {
+	c.conn.Write([]byte("ERR: " + err.Error() + "\n"))
+}
+
+func (c *client) msg(msg string) {
+	c.conn.Write([]byte("> " + msg + "\func"))
 }
