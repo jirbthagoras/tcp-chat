@@ -18,7 +18,7 @@ func newServer() *server {
 }
 
 func (s *server) newClient(conn net.Conn) *client {
-	log.Printf("new client has connected: %s", conn.RemoteAddr().String())
+	log.Printf("new client has sconnected: %s", conn.RemoteAddr().String())
 
 	return &client{
 		conn:     conn,
