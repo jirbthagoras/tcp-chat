@@ -17,6 +17,13 @@ func main() {
 	defer listener.Close()
 	log.Printf("server started on :8888")
 
+	// creates a lobby first
+	r := &room{
+		name:    "lobby",
+		members: make(map[net.Addr]*client),
+	}
+	s.rooms["lobby"] = r
+
 	for {
 		conn, err := listener.Accept()
 		if err != nil {

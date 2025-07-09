@@ -55,6 +55,17 @@ func (c *client) readInput() {
 				id:     CMD_QUIT,
 				client: c,
 			}
+		case "/members":
+			c.commands <- command{
+				id:     CMD_MEMBERS,
+				client: c,
+			}
+		case "/whisper":
+			c.commands <- command{
+				id:     CMD_WHISPER,
+				client: c,
+				args:   args,
+			}
 		default:
 			c.err(fmt.Errorf("unknown command: %s", cmd))
 		}
@@ -69,3 +80,6 @@ func (c *client) msg(msg string) {
 	c.conn.Write([]byte("> " + msg + "\n"))
 }
 
+func (c *client) systemMsg(msg string) {
+	c.msg("--- " + msg + " ---")
+}
