@@ -25,4 +25,9 @@ after you connected to the server, you can run these commands:
   list all members in your room.
 
 - `/whisper [target] [message]`
-  whisper a messaeg to one of the member in your room.
+  whisper a message to one of the member in your room.
+
+### ToDo
+
+1. Add graceful shutdown.
+2. Add private room feature that accessed by code.
