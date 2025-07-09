@@ -1,18 +1,21 @@
 ### Overview
 
-So this is just a simple tcp-chat app, i followed several tutorial to make this app, but there is also some aspects or feature that i write it myself. Let's talk about how it works, simply this application is just a server that runs workers utilizing goroutine and the amount of worker is depending by how much user connected to server. This worker basically just standing by and read user's command then executes it.
+Let's talk about how it works, simply this application is just a server that runs workers utilizing goroutine and the amount of worker is depending by how much user connected to server. This worker basically just standing by and read user's command then executes it.
 
 ### Command
 
 for development, i'm using `telnet` with this command:
-`telnet localhosts 8888`.
+
+````telnet localhost 8888
+
+```.
 
 after you connected to the server, you can run these commands:
 
 - `/nick [nickname]`
   sets your nickname, when freshly connected, you will be given a random name.
 
-- `/join [roomname]`
+- `/join [room]`
   joins to a room, when freshly connected, you'll be joining `lobby` room.
 
 - `/msg [message]`
@@ -31,3 +34,4 @@ after you connected to the server, you can run these commands:
 
 1. Add graceful shutdown.
 2. Add private room feature that accessed by code.
+````

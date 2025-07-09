@@ -47,10 +47,10 @@ func (s *server) newClient(conn net.Conn) *client {
 		conn:     conn,
 		nick:     randomString(6),
 		commands: s.commands,
-		room:     s.rooms["lobby"],
 	}
 
-	client.room.members[conn.RemoteAddr()] = client
+	s.join(client, []string{"", "lobby"})
+
 	return client
 }
 
@@ -93,7 +93,7 @@ func (s *server) join(c *client, args []string) {
 	s.quitCurrentRoom(c)
 	c.room = r
 
-	r.broadcast(c, fmt.Sprintf("%s joined the room", c.nick))
+	r.broadcast(c, fmt.Sprintf("--- %s joined the room ---", c.nick))
 
 	c.msg(fmt.Sprintf("welcome to %s", roomName))
 }
@@ -139,7 +139,7 @@ func (s *server) quitCurrentRoom(c *client) {
 	if c.room != nil {
 		oldRoom := s.rooms[c.room.name]
 		delete(s.rooms[c.room.name].members, c.conn.RemoteAddr())
-		oldRoom.broadcast(c, fmt.Sprintf("%s has left the room", c.nick))
+		oldRoom.broadcast(c, fmt.Sprintf("--- %s has left the room ---", c.nick))
 	}
 }
 
@@ -168,10 +168,9 @@ func (s *server) whisper(c *client, args []string) {
 
 	res, _ := s.checkNickname(target)
 	if !res {
-		c.err(fmt.Errorf("target %s does not exists in server", target))
+		c.err(fmt.Errorf("target %s does not exists in room", target))
 		return
 	}
 
 	c.room.whisper(c, target, msg)
 }
-

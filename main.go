@@ -35,4 +35,3 @@ func main() {
 		go c.readInput()
 	}
 }
-
