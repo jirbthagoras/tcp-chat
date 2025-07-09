@@ -4,11 +4,12 @@ Let's talk about how it works, simply this application is just a server that run
 
 ### Command
 
+```sh
+telnet localhost 8888
+
+```
+
 for development, i'm using `telnet` with this command:
-
-````telnet localhost 8888
-
-```.
 
 after you connected to the server, you can run these commands:
 
@@ -34,4 +35,7 @@ after you connected to the server, you can run these commands:
 
 1. Add graceful shutdown.
 2. Add private room feature that accessed by code.
-````
+
+```
+
+```
