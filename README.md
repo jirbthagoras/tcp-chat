@@ -34,8 +34,4 @@ after you connected to the server, you can run these commands:
 ### ToDo
 
 1. Add graceful shutdown.
-2. Add private room feature that accessed by code.
-
-```
-
-```
+2. Add private room feature that accessed by giving a code.
