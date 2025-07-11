@@ -16,7 +16,7 @@ after you connected to the server, you can run these commands:
 - `/nick [nickname]`
   sets your nickname, when freshly connected, you will be given a random name.
 
-- `/join [room]`
+- `/join [room] [code]`
   joins to a room, when freshly connected, you'll be joining `lobby` room.
 
 - `/msg [message]`
@@ -31,7 +31,9 @@ after you connected to the server, you can run these commands:
 - `/whisper [target] [message]`
   whisper a message to one of the member in your room.
 
+- `/private [room] [code]`
+  creates a private room with code
+
 ### ToDo
 
 1. Add graceful shutdown.
-2. Add private room feature that accessed by giving a code.

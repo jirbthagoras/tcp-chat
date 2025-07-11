@@ -85,11 +85,6 @@ func (s *server) join(c *client, args []string) {
 
 	roomName := args[1]
 
-	if len(args) == 3 {
-		s.joinPrivateRoom(c, roomName, args[2])
-		return
-	}
-
 	r, ok := s.rooms[roomName]
 	if !ok {
 		r = &room{
@@ -99,8 +94,13 @@ func (s *server) join(c *client, args []string) {
 		s.rooms[roomName] = r
 	}
 
-	r.members[c.conn.RemoteAddr()] = c
+	// dumps to joinPrivate function if the code exists
+	if len(args) == 3 && r.code != "" {
+		s.joinPrivateRoom(c, roomName, args[2])
+		return
+	}
 
+	r.members[c.conn.RemoteAddr()] = c
 	c.room = r
 
 	r.broadcast(c, fmt.Sprintf("--- %s joined the room ---", c.nick))
@@ -124,6 +124,7 @@ func (s *server) joinPrivateRoom(c *client, name string, code string) {
 
 	// attach client to room member
 	room.members[c.conn.RemoteAddr()] = c
+	c.room = room
 
 	room.broadcast(c, fmt.Sprintf("--- %s joined the room ---", c.nick))
 
