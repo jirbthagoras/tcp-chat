@@ -8,6 +8,7 @@ import (
 type room struct {
 	name    string
 	members map[net.Addr]*client
+	code    string
 }
 
 func (r *room) whisper(sender *client, target string, msg string) {

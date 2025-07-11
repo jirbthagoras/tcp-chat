@@ -1,10 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net"
 	"strings"
+
+	"github.com/go-playground/validator/v10/translations/ar"
 )
 
 type server struct {
@@ -143,13 +146,6 @@ func (s *server) quitCurrentRoom(c *client) {
 	}
 }
 
-// func (s *server) checkRoom(c *client) {
-// 	if c.room == nil {
-// 		c.err(errors.New("please join a room first with: /join [roomname]"))
-// 		return
-// 	}
-// }
-
 func (s *server) checkNickname(nickname string) (bool, *client) {
 	for _, room := range s.rooms {
 		for _, member := range room.members {
@@ -162,6 +158,12 @@ func (s *server) checkNickname(nickname string) (bool, *client) {
 }
 
 func (s *server) whisper(c *client, args []string) {
+	// checks if the args inputted are including msg and target.
+	if len(args) < 3 {
+		c.err(errors.New("please attach target or the message"))
+		return
+	}
+
 	// grab the message and target
 	msg := strings.Join(args[2:], " ")
 	target := args[1]

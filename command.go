@@ -10,6 +10,7 @@ const (
 	CMD_QUIT
 	CMD_WHISPER
 	CMD_MEMBERS
+	CMD_PRIVATE
 )
 
 type command struct {
