@@ -38,7 +38,7 @@ func (s *server) run() {
 		case CMD_WHISPER:
 			s.whisper(cmd.client, cmd.args)
 		case CMD_PRIVATE:
-			s.whisper(cmd.client, cmd.args)
+			s.private(cmd.client, cmd.args)
 		}
 	}
 }
@@ -75,12 +75,20 @@ func (s *server) nick(c *client, args []string) {
 }
 
 func (s *server) join(c *client, args []string) {
+	// make sure if the user leaves current room
+	s.quitCurrentRoom(c)
+
 	if len(args) < 2 {
 		c.systemMsg("room name is required. usage: /join [roomName]")
 		return
 	}
 
 	roomName := args[1]
+
+	if len(args) == 3 {
+		s.joinPrivateRoom(c, roomName, args[2])
+		return
+	}
 
 	r, ok := s.rooms[roomName]
 	if !ok {
@@ -93,12 +101,33 @@ func (s *server) join(c *client, args []string) {
 
 	r.members[c.conn.RemoteAddr()] = c
 
-	s.quitCurrentRoom(c)
 	c.room = r
 
 	r.broadcast(c, fmt.Sprintf("--- %s joined the room ---", c.nick))
 
 	c.msg(fmt.Sprintf("welcome to %s", roomName))
+}
+
+func (s *server) joinPrivateRoom(c *client, name string, code string) {
+	// checks if a room with those name exists
+	room, ok := s.rooms[name]
+	if !ok {
+		c.err(errors.New("rooms with those name are not exists"))
+		return
+	}
+
+	// checks if the code is match
+	if room.code != code {
+		c.err(errors.New("room code does not match"))
+		return
+	}
+
+	// attach client to room member
+	room.members[c.conn.RemoteAddr()] = c
+
+	room.broadcast(c, fmt.Sprintf("--- %s joined the room ---", c.nick))
+
+	c.msg(fmt.Sprintf("welcome to %s", name))
 }
 
 func (s *server) listRooms(c *client) {
@@ -112,7 +141,7 @@ func (s *server) listRooms(c *client) {
 
 func (s *server) msg(c *client, args []string) {
 	if len(args) < 2 {
-		c.systemMsg("message is required, usage: /msg MSG")
+		c.err(errors.New("message is required, usage: /msg MSG"))
 		return
 	}
 
@@ -195,6 +224,7 @@ func (s *server) private(c *client, args []string) {
 		return
 	}
 
+	// make a room.
 	r := &room{
 		name:    name,
 		members: make(map[net.Addr]*client),
@@ -202,4 +232,7 @@ func (s *server) private(c *client, args []string) {
 	}
 
 	s.rooms[name] = r
+
+	// message the user
+	c.systemMsg(fmt.Sprintf("private room %s created, to join you can use /join", name))
 }
