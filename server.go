@@ -6,8 +6,6 @@ import (
 	"log"
 	"net"
 	"strings"
-
-	"github.com/go-playground/validator/v10/translations/ar"
 )
 
 type server struct {
@@ -38,6 +36,8 @@ func (s *server) run() {
 		case CMD_MEMBERS:
 			s.listMembers(cmd.client)
 		case CMD_WHISPER:
+			s.whisper(cmd.client, cmd.args)
+		case CMD_PRIVATE:
 			s.whisper(cmd.client, cmd.args)
 		}
 	}
@@ -175,4 +175,31 @@ func (s *server) whisper(c *client, args []string) {
 	}
 
 	c.room.whisper(c, target, msg)
+}
+
+func (s *server) private(c *client, args []string) {
+	// checkts if the args is enough
+	if len(args) < 3 {
+		c.err(errors.New("please attach the room name and code"))
+		return
+	}
+
+	// take the args: the room name and code
+	name := args[1]
+	code := args[2]
+
+	// checks if there is a room with those name
+	_, ok := s.rooms[name]
+	if ok {
+		c.err(errors.New("room with those name already exists "))
+		return
+	}
+
+	r := &room{
+		name:    name,
+		members: make(map[net.Addr]*client),
+		code:    code,
+	}
+
+	s.rooms[name] = r
 }
